@@ -17,6 +17,7 @@ extern uint16_t Flashlight_Time;
 extern uint16_t Power_Time;
 extern uint16_t Usart_Time;
 extern uint16_t ADC_Time;
+extern uint16_t Idle_Time;
 extern uint16_t Shutdown_Time_S;
 extern uint8_t Shutdown_Time_M;
 

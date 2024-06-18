@@ -104,6 +104,9 @@ void KEY1_Task(void)
 	}
 
 	KEY1_State = 0;
+
+	// Reset back to showing battery percentage for a couple seconds
+	Idle_Time = 0;
 }
 
 /**************************************************
@@ -332,7 +335,7 @@ static void WS2812_Disabled(void)
 }
 
 static void WS2818_Knight_Rider(uint8_t brightness) {
-	#define ANIMATION_TICK_TIME 5
+	#define ANIMATION_TICK_TIME 6
 	#define TAIL_LENGTH 4
 	static uint8_t frame = 0;
 	static int8_t direction = 1;
@@ -378,7 +381,7 @@ static void WS2818_Knight_Rider(uint8_t brightness) {
 // Idle animation:
 static void WS2812_Idle(StatusBarIdleMode mode)
 {
-	if (mode == IDLE_MODE_KNIGHT_RIDER) {
+	if (((mode == IDLE_MODE_HYBRID) && (Idle_Time > 2000)) || (mode == IDLE_MODE_KNIGHT_RIDER)) {
 		WS2818_Knight_Rider(WS2812_Measure);
 	} else {
 		// Battery mode
@@ -458,6 +461,7 @@ void WS2812_Task(void)
 			WS2812_Disabled();
 		}
 		else {
+			Idle_Time = 0;
 			WS2812_Boot();
 		}
 		return;
@@ -465,6 +469,7 @@ void WS2812_Task(void)
 	
 	if (Power_Flag > 2) {
 		WS2812_Refresh();
+		Idle_Time = 0;
 		return;
 	}
 	
@@ -488,6 +493,7 @@ void WS2812_Task(void)
 			// Idle state - no footpads pressed
 			WS2812_Idle(lcmConfig.statusBarIdleMode);	// Idle animation
 		} else {
+			Idle_Time = 0;
 			WS2812_VESC();
 		}
 	}

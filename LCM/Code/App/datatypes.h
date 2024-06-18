@@ -1404,8 +1404,9 @@ typedef enum {
 } BootAnimation;
 
 typedef enum {
-	IDLE_MODE_BATTERY = 0,
-	IDLE_MODE_KNIGHT_RIDER = 1,
+	IDLE_MODE_HYBRID = 0,
+	IDLE_MODE_BATTERY = 1,
+	IDLE_MODE_KNIGHT_RIDER = 2,
 } StatusBarIdleMode;
 
 

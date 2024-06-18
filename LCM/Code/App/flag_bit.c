@@ -79,6 +79,10 @@ uint16_t Usart_Time = 0;
 */
 uint16_t ADC_Time = 0;
 /*
+	Time the board has been idle (aka not running)
+*/
+uint16_t Idle_Time = 0;
+/*
 	Shutdown counter, milliseconds and minutes
 */
 uint16_t Shutdown_Time_S = 0;
