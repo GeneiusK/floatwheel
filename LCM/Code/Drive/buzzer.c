@@ -1,5 +1,7 @@
 #include "buzzer.h"
 
+#ifdef USE_BUZZER
+
 uint16_t Buzzer_Counter = 0;
 
 /**************************************************
@@ -63,3 +65,4 @@ void Buzzer_Ring(uint16_t ring_time)
 	Buzzer_Counter = ring_time;
 }
 
+#endif

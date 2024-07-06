@@ -48,7 +48,8 @@ uint8_t Power_Display_Flag = 0;
 	Buzzer_Flag = 1；蜂鸣器不响
 	Buzzer_Flag = 2；蜂鸣器响
 */
-uint8_t Buzzer_Flag = 0;
+//uint8_t Buzzer_Flag = 0;
+
 /*
 	Usart_Flag = Vesc_Data_Ready
 */
@@ -57,7 +58,7 @@ uint8_t Vesc_Data_Ready = 0;
 /*
 	蜂鸣器响的时间
 */
-uint16_t Buzzer_Time = 0;
+//uint16_t Buzzer_Time = 0;
 /*
 	充电计时
 */
@@ -113,7 +114,7 @@ uint8_t WS2812_Measure = 0;
 /*
 	 Buzzer frequency in BPM, beats per minute, ranging from 60 to 180, corresponding to a duty cycle of 70 to 100)
 */
-uint8_t Buzzer_Frequency = 0;
+//uint8_t Buzzer_Frequency = 0;
 /*
 	 When the button is double-clicked without pressing it, the headlight stays on for 3 seconds.
 */

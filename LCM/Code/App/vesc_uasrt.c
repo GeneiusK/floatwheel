@@ -2,17 +2,16 @@
 #include "flag_bit.h"
 #include "eeprom.h"
 
-uint8_t VESC_RX_Buff[256];
+uint8_t VESC_RX_Buff[32];
 uint8_t VESC_RX_Flag = 0;
 
-#define FIRMWARE_ID "FWADV_2_0_4"
+#define FIRMWARE_ID "FWADV_2_1_1"
 
 // Access ADC values here to determine riding state
 extern float ADC1_Val, ADC2_Val;
 
 dataPackage data;
 lcmConfig_t lcmConfig;
-uint8_t errCode = 0;
 
 /**************************************************
  * @brie   :Send_Pack_Data()
@@ -23,7 +22,7 @@ uint8_t errCode = 0;
  **************************************************/
 void Send_Pack_Data(uint8_t *payload,uint16_t len) 
 {
-	uint8_t protocol_buff[256]; //发送缓冲区
+	uint8_t protocol_buff[40]; //发送缓冲区
 	uint8_t count = 0;
 	uint16_t crcpayload = crc16(payload, len);  //计算校验 
 	
@@ -46,16 +45,18 @@ void Send_Pack_Data(uint8_t *payload,uint16_t len)
 	
 	*/
 	
-	if (len <= 256) //数据包长度不大于256个字节
+	if (len <= 32) //数据包长度不大于256个字节
 	{
 		protocol_buff[count++] = 2;
 		protocol_buff[count++] = len;
 	}
 	else //数据包长度大于256个字节
 	{
-		protocol_buff[count++] = 3;
-		protocol_buff[count++] = (uint8_t)(len >> 8);
-		protocol_buff[count++] = (uint8_t)(len & 0xFF);
+		// no need to support extra long messages since we don't use such messages
+		return;
+		//protocol_buff[count++] = 3;
+		//protocol_buff[count++] = (uint8_t)(len >> 8);
+		//protocol_buff[count++] = (uint8_t)(len & 0xFF);
 	}
 
 	memcpy(&protocol_buff[count], payload, len);  //把数据包复制到协议里
@@ -85,7 +86,7 @@ void buffer_append_float16(uint8_t* buffer, float number, uint8_t scale, uint8_t
  **************************************************/
 void Get_Vesc_Pack_Data(COMM_PACKET_ID id)
 {
-	uint8_t command[32];
+	uint8_t command[24];
 	int len = 1;
 	
 	command[0] = id;
@@ -120,12 +121,13 @@ void Get_Vesc_Pack_Data(COMM_PACKET_ID id)
 		command[2] = 99; // FLOAT_COMMAND_LCM_DEBUG
 		command[3] = Power_Flag;
 		command[4] = Charge_Flag;
-		command[5] = Buzzer_Flag;
+		command[5] = data.dutyCycleNow;
 		command[6] = WS2812_Display_Flag;
 		command[7] = WS2812_Flag;
-		command[8] = Gear_Position;
-		command[9] = errCode;
-		len = 10;
+		command[8] = Shutdown_Time_M;
+		command[9] = Shutdown_Time_S / 1000;
+		command[10] = GPIOC->IDR;
+		len = 11;
 	}
 	
 	Send_Pack_Data(command, len);
@@ -205,7 +207,7 @@ float buffer_get_float32(const uint8_t *buffer, float scale, int32_t *index) {
 void Process_Command(uint8_t command, uint8_t data)
 {
 	switch (command) {
-		case HEADLIGHT_BRIGHTNESS:
+		/*case HEADLIGHT_BRIGHTNESS:
 			lcmConfig.headlightBrightness = data;
 			return;
 		case HEADLIGHT_IDLE_BRIGHTNESS:
@@ -213,8 +215,8 @@ void Process_Command(uint8_t command, uint8_t data)
 			return;
 		case STATUSBAR_BRIGHTNESS:
 			lcmConfig.statusbarBrightness = data;
-			return;
-		case STATUS_BAR_IDLE_MODE:
+			return;*/
+		/*case STATUS_BAR_IDLE_MODE:
 			if (data != lcmConfig.statusBarIdleMode) {
 				lcmConfig.statusBarIdleMode = data;
 				EEPROM_WriteByte(STATUS_BAR_IDLE_MODE, data);
@@ -229,24 +231,24 @@ void Process_Command(uint8_t command, uint8_t data)
 		case DUTY_BEEP:
 			if (data != lcmConfig.dutyBeep) {
 				lcmConfig.dutyBeep = data;
-				EEPROM_WriteByte(DUTY_BEEP, data);
+				//EEPROM_WriteByte(DUTY_BEEP, data);
 			}
-			return;
+			return;*/
 		case POWER_OFF:
 			lcmConfig.boardOff = data == 1;
 			return;
-		case CHARGE_CUTOFF:
-			lcmConfig.chargeCutoffVoltage = data;
+		/*case CHARGE_CUTOFF:
+			//lcmConfig.chargeCutoffVoltage = data;
 			return;
 		case AUTO_SHUTDOWN:
 			if (data != lcmConfig.autoShutdownTime) {
 				lcmConfig.autoShutdownTime = data;
-				EEPROM_WriteByte(AUTO_SHUTDOWN, data);
+				//EEPROM_WriteByte(AUTO_SHUTDOWN, data);
 			}
-			return;
+			return;*/
 		case FACTORY_RESET:
 			if (data == 1) {
-				EEPROM_EraseAll();
+				//EEPROM_EraseAll();
 				NVIC_SystemReset();
 			}
 			return;
@@ -281,7 +283,8 @@ uint8_t Protocol_Parse(uint8_t * message)
 		break;
 		
 		case 0x03:
-			
+			// we don't support/expect long messages, return error
+			return 1;
 		break;
 		
 	}
@@ -334,7 +337,7 @@ uint8_t Protocol_Parse(uint8_t * message)
 			//data.switchstate = (state >> 4) & 0x7;
 			data.isHandtest = (state & 0x80) > 0;
 			data.fault = pdata[ind++];
-			if ((data.state >= 1) && (data.state <= 5)) {
+			if ((data.state == RUNNING) || (data.state == RUNNING_TILTBACK) || (data.state == RUNNING_WHEELSLIP)) {
 				data.dutyCycleNow = pdata[ind++];
 				data.pitch = 0;
 			}
@@ -344,7 +347,12 @@ uint8_t Protocol_Parse(uint8_t * message)
 			}
 			data.rpm = buffer_get_float16(pdata, 1.0, &ind);
 			data.avgInputCurrent = buffer_get_float16(pdata, 1.0, &ind);
-			data.inpVoltage = buffer_get_float16(pdata, 10.0, &ind);
+
+			float v                 = buffer_get_float16(pdata, 10.0, &ind);
+			if (data.inpVoltage < 50)
+				data.inpVoltage = v;
+			else
+				data.inpVoltage = data.inpVoltage * 0.9 + 0.1 * v;
 
 			if ((len >= ind + 3)) {
 				// Float package is 0-100 range. Adjust as needed

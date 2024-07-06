@@ -13,11 +13,7 @@
 #define  LED_F_ON    GPIOC->BSRR = GPIO_Pin_6;
 #define  LED_F_OFF   GPIOC->BRR  = GPIO_Pin_6;
 
-extern uint16_t LED_Counter;
-//extern uint16_t LED_Filp_Time;
-
 void LED_Init(void);
-//void LED1_Filp_Time(uint16_t filp_time);
 
 #endif
 

@@ -95,36 +95,6 @@ void WS2812_Set_Colour(uint8_t num,uint8_t red,uint8_t green,uint8_t blue)
 	
 }
 
-/**************************************************
- * @brie   :WS2812_Left()
- * @note   :WS2812左移 
- * @param  :无
- * @retval :无
- **************************************************/
-void WS2812_Left(void)
-{
-	uint8_t buff[24];
-	uint8_t i = 0,j = 0;
-	
-	for(i=0; i<24; i++)
-	{
-		buff[i] = WS2812_Buff[WS2812_N-1][i];
-	}
-	
-	for(i=WS2812_N-1; i>0; i--)
-	{
-		for(j=0; j<24; j++)
-		{
-			WS2812_Buff[i][j] = WS2812_Buff[i-1][j];
-		}
-	}
-	
-	for(i=0; i<24; i++)
-	{
-		WS2812_Buff[0][i] = buff[i];
-	}
-}
-
 ///**************************************************
 // * @brie   :WS2812_Refresh()
 // * @note   :WS2812刷新一次

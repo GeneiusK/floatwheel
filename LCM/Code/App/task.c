@@ -16,14 +16,14 @@ static void lcmConfigReset(void)
 	lcmConfig.headlightBrightness = 0;
 	lcmConfig.headlightIdleBrightness = 0;
 	lcmConfig.statusbarBrightness = 5;
-	lcmConfig.statusBarIdleMode = DEFAULT_IDLE_MODE;
 	lcmConfig.boardOff = 0;
+	/*
+	lcmConfig.statusBarIdleMode = DEFAULT_IDLE_MODE;
 	lcmConfig.chargeCutoffVoltage = 0;
 	lcmConfig.bootAnimation = BOOT_DEFAULT;
 	lcmConfig.dutyBeep = 90;
 	lcmConfig.autoShutdownTime = SHUTDOWN_TIME;
-	errCode = 0;
-
+	
 	EEPROM_ReadByte(BOOT_ANIMATION, &lcmConfig.bootAnimation);
 	if (lcmConfig.bootAnimation < 0 || lcmConfig.bootAnimation >= BOOT_ANIMATION_COUNT) {
 		lcmConfig.bootAnimation = BOOT_DEFAULT;
@@ -42,7 +42,7 @@ static void lcmConfigReset(void)
 	EEPROM_ReadByte(AUTO_SHUTDOWN, &lcmConfig.autoShutdownTime);
 	if (lcmConfig.autoShutdownTime <= 0) {
 		lcmConfig.autoShutdownTime = SHUTDOWN_TIME;
-	}
+	}*/
 }
 
 // brightnesses for Gear 1, 2, 3:
@@ -91,14 +91,15 @@ void KEY1_Task(void)
 		case 4:         // Three presses
 			if(Power_Flag == 2) // Boot completed
 			{
-				if(Buzzer_Flag == 2)
+				Idle_Time = 0;
+				/*if(Buzzer_Flag == 2)
 				{
 					Buzzer_Flag = 1;
 				}
 				else
 				{
 					Buzzer_Flag = 2;
-				}
+				}*/
 			}
 		break;
 	}
@@ -106,7 +107,6 @@ void KEY1_Task(void)
 	KEY1_State = 0;
 
 	// Reset back to showing battery percentage for a couple seconds
-	Idle_Time = 0;
 }
 
 /**************************************************
@@ -173,41 +173,30 @@ static void WS2812_VESC(void)
 			
 		case 4:// Riding
 			
-		  if (data.state != RUNNING_WHEELSLIP) {
-				if (Power_Display_Flag > 7) {
-					// Voltage below 30%?
-					// Display 1/2 red dots at full brightness above anything else
-					WS2812_Power_Display(WS2812_Measure);
-				}
-				else if (data.dutyCycleNow > 90) {
-					WS2812_Set_AllColours(1, NUM_LEDS,255,0,0);
-				}
-				else if (data.dutyCycleNow > 85) {
-					WS2812_Set_AllColours(1, NUM_LEDS-1,255,0,0);
-				}
-				else if (data.dutyCycleNow > 80) {
-					WS2812_Set_AllColours(1, NUM_LEDS-2,WS2812_Measure,WS2812_Measure/2,0);
-				}
-				else if (data.dutyCycleNow > 70) {
-					WS2812_Set_AllColours(1, NUM_LEDS-3,WS2812_Measure/3,WS2812_Measure/3,0);
-				}
-				/*else if (data.dutyCycleNow > 60) {
-					WS2812_Set_AllColours(1, 6,0,brightness/3,0);
-				}
-				else if (data.dutyCycleNow > 50) {
-					WS2812_Set_AllColours(1, 5,0,brightness/4,0);
-				}*/
-				else if (Power_Display_Flag > 6) {
-					// Voltage below 40%?
-					// Display 1/2/3 red dots at full brightness
-					WS2812_Power_Display(WS2812_Measure);
-				}
-				else {
-					WS2812_Set_AllColours(1, NUM_LEDS,0,0,0);
-				}
+			/*if (Power_Display_Flag > 7) {
+				// Voltage below 30%?
+				// Display 1/2 red dots at full brightness above anything else
+				WS2812_Power_Display(WS2812_Measure);
+			}
+			else if (data.dutyCycleNow > 90) {
+				WS2812_Set_AllColours(1, NUM_LEDS,255,0,0);
+			}
+			else if (data.dutyCycleNow > 85) {
+				WS2812_Set_AllColours(1, NUM_LEDS-1,255,0,0);
+			}
+			else if (data.dutyCycleNow > 80) {
+				WS2812_Set_AllColours(1, NUM_LEDS-2,WS2812_Measure,WS2812_Measure/2,0);
+			}
+			else if (data.dutyCycleNow > 70) {
+				WS2812_Set_AllColours(1, NUM_LEDS-3,WS2812_Measure/3,WS2812_Measure/3,0);
+			}
+			else */if (Power_Display_Flag > 6) {
+				// Voltage below 40%?
+				// Display 1/2/3 red dots at full brightness
+				WS2812_Power_Display(WS2812_Measure);
 			}
 			else {
-					WS2812_Set_AllColours(1, NUM_LEDS,0,0,0);
+				WS2812_Set_AllColours(1, NUM_LEDS,0,0,0);
 			}
 		break;
 
@@ -220,9 +209,6 @@ static void WS2812_VESC(void)
 			WS2812_Set_Colour(pos,red,green,blue);
 		break;			
 		default:
-			if (errCode == 0)
-				errCode = 1;
-			//WS2812_Set_AllColours(9, 10,50,0,0);
 		break;
 	}
 	WS2812_Refresh();
@@ -237,25 +223,26 @@ void WS2812_Boot(void)
 {
 	uint8_t i;
 	uint8_t num = floor(Power_Time / 500) + 1;
-	uint8_t bootAnims[][10][3] = {
+	uint8_t bootAnims[10][3] = {
 		// Default (blue...green)
-		{{10,0,30}, {9,3,27}, {8,6,24}, {7,9,21}, {6,12,18}, {5,15,15}, {4,18,12}, {3,21,9}, {2,24,6}, {1,27,3}},
+		//{{10,0,30}, {9,3,27}, {8,6,24}, {7,9,21}, {6,12,18}, {5,15,15}, {4,18,12}, {3,21,9}, {2,24,6}, {1,27,3}},
+		{25,0,30}, {22,2,27}, {18,4,24}, {15,6,21}, {12,8,18}, {8,10,15}, {6,12,12}, {4,14,9}, {2,16,6}, {0,18,6},
 		// Rainbow
-		{{30,0,0}, {30,15,0}, {30,30,0}, {15,30,0}, {0,30,0}, {0,30,15}, {0,30,30}, {0,15,30}, {0,0,30}, {15,0,30}},
+		//{{30,0,0}, {30,15,0}, {30,30,0}, {15,30,0}, {0,30,0}, {0,30,15}, {0,30,30}, {0,15,30}, {0,0,30}, {15,0,30}},
 		// Red White Blue
-		{{30,0,0}, {30,30,30}, {0,0,30}, {30,0,0}, {30,30,30}, {0,0,30}, {30,0,0}, {30,30,30}, {0,0,30}, {30,0,0}}
+		//{{30,0,0}, {30,30,30}, {0,0,30}, {30,0,0}, {30,30,30}, {0,0,30}, {30,0,0}, {30,30,30}, {0,0,30}, {30,0,0}}
 };
 
-	if (lcmConfig.bootAnimation < 0 || lcmConfig.bootAnimation >= BOOT_ANIMATION_COUNT) {
+	/*if (lcmConfig.bootAnimation < 0 || lcmConfig.bootAnimation >= BOOT_ANIMATION_COUNT) {
 		// Invalid boot animation
 		lcmConfig.bootAnimation = BOOT_DEFAULT;
-	}
+	}*/
 
 	while (num > 10) {
 		num -= 10;
 	}
 	for (i=0;i<num;i++) {
-		WS2812_Set_Colour(i,bootAnims[lcmConfig.bootAnimation][i][0],bootAnims[lcmConfig.bootAnimation][i][1],bootAnims[lcmConfig.bootAnimation][i][2]);
+		WS2812_Set_Colour(i,bootAnims[i][0],bootAnims[i][1],bootAnims[i][2]);
 	}
 
 	for (i = num; i < 10; i++) {
@@ -341,11 +328,8 @@ static void WS2818_Knight_Rider(uint8_t brightness) {
 	static int8_t direction = 1;
 	static int8_t position = 0;
 
-	if (frame == 255) {
+	if (frame >= ANIMATION_TICK_TIME) {
 		frame = 0;
-	}
-
-	if ((frame % ANIMATION_TICK_TIME) == 0) {
 
 		for (uint8_t i = 0; i < NUM_LEDS; i++) {
 			int8_t distanceToTail = (direction == 1) ? position - i : i - position;
@@ -379,15 +363,25 @@ static void WS2818_Knight_Rider(uint8_t brightness) {
 }
 
 // Idle animation:
-static void WS2812_Idle(StatusBarIdleMode mode)
+static void WS2812_Idle()
 {
-	if (((mode == IDLE_MODE_HYBRID) && (Idle_Time > 2000)) || (mode == IDLE_MODE_KNIGHT_RIDER)) {
-		WS2818_Knight_Rider(WS2812_Measure);
-	} else {
-		// Battery mode
-		WS2812_Power_Display(WS2812_Measure);
-		WS2812_Refresh();
+	if (Idle_Time > 3000) {
+		if (Power_Display_Flag > 9) {
+			// Voltage below 10%? Flash bright red!
+			WS2812_Set_AllColours(1, 10, 255, 20, 20);
+			WS2812_Refresh();
+			if (Idle_Time > 3040) {
+				Idle_Time = 0;
+			}
+		}
+		else {
+			WS2818_Knight_Rider(WS2812_Measure);
+		}
+		return;
 	}
+	// Battery mode
+	WS2812_Power_Display(WS2812_Measure);
+	WS2812_Refresh();
 }
 
 static void WS2812_Handtest(void)
@@ -419,12 +413,6 @@ static void WS2812_Handtest(void)
 void WS2812_Task(void)
 {
 	uint8_t i;
-
-	if(WS2812_Counter < 20) // 20ms refresh period
-	{
-		return;
-	}
-	WS2812_Counter = 0;
 	
 	if(Charge_Flag == 3) // Battery fully charged
 	{
@@ -453,17 +441,11 @@ void WS2812_Task(void)
 		Power_Display_Flag = 0;
 		return;
 	}
-	
+
 	if(Power_Flag == 1)
 	{
-		if (data.state == DISABLED) {
-			// 2 red LEDs in the center
-			WS2812_Disabled();
-		}
-		else {
-			Idle_Time = 0;
-			WS2812_Boot();
-		}
+		Idle_Time = 0;
+		WS2812_Boot();
 		return;
 	}
 	
@@ -491,7 +473,7 @@ void WS2812_Task(void)
 	else {
 		if (WS2812_Display_Flag == 1) {
 			// Idle state - no footpads pressed
-			WS2812_Idle(lcmConfig.statusBarIdleMode);	// Idle animation
+			WS2812_Idle();	// Idle animation
 		} else {
 			Idle_Time = 0;
 			WS2812_VESC();
@@ -539,7 +521,7 @@ void Power_Task(void)
 					{
 						Power_Flag = 2; // Boot completed
 						Gear_Position = 1; // The default setting is 1st gear after power-on.
-						Buzzer_Flag = 2;    // The default buzzer sounds when powering on
+						//Buzzer_Flag = 2;    // The default buzzer sounds when powering on
 						power_step = 0;
 						WS2812_Display_Flag = 1;
 					}
@@ -563,27 +545,25 @@ void Power_Task(void)
 void CheckPowerLevel(float battery_voltage)
 {
 	float battVoltages[10] = {4.054, 4.01, 3.908, 3.827, 3.74, 3.651, 3.571, 3.485, 3.38, 3.0}; //P42A
-	float battcellcurves[2][10] = {{4.054, 4.01, 3.908, 3.827, 3.74, 3.651, 3.571, 3.485, 3.38, 3.0},   //P42A
-								   {4.07, 4.025, 3.91, 3.834, 3.746, 3.607, 3.49, 3.351, 3.168, 2.81}}; //DG40
-	static uint8_t cell_type_last = 1; //CELL_TYPE P42A equates out to 0
+	//float battcellcurve[10] = {4.054, 4.01, 3.908, 3.827, 3.74, 3.651, 3.571, 3.485, 3.38, 3.0};   //P42A
+								   //{4.07, 4.025, 3.91, 3.834, 3.746, 3.607, 3.49, 3.351, 3.168, 2.81}}; //DG40
+	//static uint8_t cell_type_last = 1; //CELL_TYPE P42A equates out to 0
 
-	if (CELL_TYPE != cell_type_last) // If !P42a run once at boot or on change
+	/*if (CELL_TYPE != cell_type_last) // If !P42a run once at boot or on change
 	{
 		cell_type_last = CELL_TYPE;
 		for (int i=0;i<10;i++)
 		{
 			battVoltages[i] = battcellcurves[cell_type_last][i];
 		}
-	}
+	}*/
 
+	// Default: Between zero and min voltage
+	Power_Display_Flag = 10;
 	for (int i=0;i<10;i++) {
 		if (battery_voltage > battVoltages[i]) {
 			Power_Display_Flag = i + 1;
 			break;
-		}
-		// Between zero and min voltage
-		if (i == 9) {
-			Power_Display_Flag = 10;
 		}
 	}
 }
@@ -595,7 +575,7 @@ void CheckPowerLevel(float battery_voltage)
 void Charge_Task(void)
 {
 	static uint8_t charge_step = 0;
-	bool isAboveCutoff = lcmConfig.chargeCutoffVoltage > 0 && Charge_Voltage > lcmConfig.chargeCutoffVoltage;
+	bool isAboveCutoff = false;//lcmConfig.chargeCutoffVoltage > 0 && Charge_Voltage > lcmConfig.chargeCutoffVoltage;
 
 	if(Charge_Flag > 0)
 	{
@@ -705,11 +685,7 @@ void Charge_Task(void)
 			}		
 		break;
 			
-		
 		default:
-			if (errCode == 0)
-				errCode = 3;
-			
 		break;
 		
 	}
@@ -829,6 +805,7 @@ void Headlights_Task(void)
 /**************************************************
  * @brie   :Buzzer_Task()
  **************************************************/
+#ifdef USE_BUZZER
 void Buzzer_Task(void)
 {
 	static uint8_t buzzer_step = 0;
@@ -914,6 +891,8 @@ void Buzzer_Task(void)
 		}
 	}
 }
+
+#endif
 
 /**************************************************
  * @brie   :Usart_Task()
@@ -1090,6 +1069,7 @@ void VESC_State_Task(void)
 	{
 		data.dutyCycleNow = -data.dutyCycleNow;
 	}
+#ifdef USE_BUZZER
 	// Duty Cycle beep
 	if ((lcmConfig.dutyBeep > 0) && (data.dutyCycleNow >= lcmConfig.dutyBeep))
 	{
@@ -1099,11 +1079,11 @@ void VESC_State_Task(void)
 	{
 		Buzzer_Frequency = 0;
 	}
-	
 	// Don't buzz in wheel slip or flywheel mode
 	if (data.state > RUNNING_UPSIDEDOWN) {
 		Buzzer_Frequency = 0;
 	}
+#endif	
 	
 	if(data.rpm<0)
 	{
@@ -1113,40 +1093,30 @@ void VESC_State_Task(void)
 	if(data.state == RUNNING_FLYWHEEL) {
 		WS2812_Display_Flag = 2;
 		WS2812_Flag = 5;
-		Buzzer_Frequency = 0;
+		//Buzzer_Frequency = 0;
 	}
 	else if(data.rpm<VESC_RPM)
 	{
-		if (data.state == DISABLED) {
-			if ((ADC1_Val > 2) || (ADC2_Val > 2)) {
-				// Don't touch my board when it's disabled :)
-				Buzzer_Frequency = 100;
+		if(ADC1_Val < 2.0 && ADC2_Val <2.0)
+		{
+			if((data.state == 0) || (data.state >= FAULT_ANGLE_PITCH))
+			{   // disengaged board
+				WS2812_Display_Flag = 1;
 			}
 		}
 		else {
-			Buzzer_Frequency = 0;
-
-			if(ADC1_Val < 2.0 && ADC2_Val <2.0)
+			WS2812_Display_Flag = 2;
+			if(ADC1_Val > 2.9 && ADC2_Val > 2.9)
 			{
-				if(data.avgInputCurrent < 1.0)
-				{
-					WS2812_Display_Flag = 1;
-				}
+				WS2812_Flag = 3;
 			}
-			else {
-				WS2812_Display_Flag = 2;
-				if(ADC1_Val > 2.9 && ADC2_Val > 2.9)
-				{
-					WS2812_Flag = 3;
-				}
-				else if(ADC1_Val >2.9)
-				{
-					WS2812_Flag = 1;
-				}
-				else
-				{
-					WS2812_Flag = 2;
-				}
+			else if(ADC1_Val >2.9)
+			{
+				WS2812_Flag = 1;
+			}
+			else
+			{
+				WS2812_Flag = 2;
 			}
 		}
 	}
@@ -1169,7 +1139,7 @@ void VESC_State_Task(void)
 		Shutdown_Time_S = 0;
 		
 		Shutdown_Time_M++;
-		if(Shutdown_Time_M >= lcmConfig.autoShutdownTime)
+		if(Shutdown_Time_M >= SHUTDOWN_TIME)//lcmConfig.autoShutdownTime)
 		{
 			Power_Flag = 4;
 			Power_Time = 0;
@@ -1182,4 +1152,5 @@ void VESC_State_Task(void)
 		Power_Flag = 4;
 		Power_Time = 0;
 	}
+	lcmConfig.boardOff = false;
 }

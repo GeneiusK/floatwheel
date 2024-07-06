@@ -129,15 +129,14 @@ void SysTick_Handler(void)
   /* USER CODE END SysTick_IRQn 1 */
 }
 
-
 void TIM6_IRQHandler(void)
 {
 	if(TIM_GetITStatus(TIM6, TIM_IT_Update) != RESET)
-  {
+	{
 		TIM_ClearITPendingBit(TIM6, TIM_IT_Update);
-		LED_Counter++;
+		
 		WS2812_Counter++;
-		Buzzer_Time++;
+		//Buzzer_Time++;
 		Charge_Time++;
 		Flashlight_Time++;
 		Power_Time++;
@@ -147,8 +146,9 @@ void TIM6_IRQHandler(void)
 		Flashlight_Detection_Time++;
 		Charger_Detection_1ms++;
 		Idle_Time++;
+		
 		KEY1_Scan();
-		Buzzer_Scan();
+		//Buzzer_Scan();
   }
 }
 
@@ -159,6 +159,10 @@ void USART1_IRQHandler(void)
 	if((USART1->ISR & USART_ISR_RXNE) != 0)	//接收中断
 	{
 		USART_ClearFlag(USART1,USART_FLAG_RXNE);
+		if (count > 31) {
+			// actual messages should be shorter than 32 bytes but you never know...
+			count = 31;
+		}
 		VESC_RX_Buff[count++] = USART1->RDR; //将收到的数据发入接收缓冲区
 	}
 	if((USART1->ISR & USART_ISR_IDLE) != 0) //空闲中断

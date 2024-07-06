@@ -51,7 +51,9 @@ int main(void)
 {	
 	//RCC_GetClocksFreq(&RCC_Clock);
 	LED_Init();
+#ifdef USE_BUZZER		
 	Buzzer_Init();
+#endif
 	ADC1_Init();
 	WS2812_Init();
 	Power_Init();
@@ -66,11 +68,19 @@ int main(void)
 	while(1)
 	{
 		KEY1_Task();
-		WS2812_Task();
+		
+		if(WS2812_Counter >= 20) // 20ms refresh period
+		{
+			WS2812_Task();
+			WS2812_Counter = 0;
+		}
+
 		Power_Task();
 		Charge_Task();
 		Headlights_Task();
+#ifdef USE_BUZZER		
 		Buzzer_Task();
+#endif
 		Usart_Task();
 		ADC_Task();
 		VESC_State_Task();

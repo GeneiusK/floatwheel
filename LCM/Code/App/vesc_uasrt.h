@@ -25,17 +25,17 @@ typedef struct {
 	uint8_t headlightBrightness;
 	uint8_t headlightIdleBrightness;
 	uint8_t statusbarBrightness;
-	StatusBarIdleMode statusBarIdleMode;
-	uint8_t dutyBeep;
-	float chargeCutoffVoltage;
-	uint8_t autoShutdownTime;
+	//StatusBarIdleMode statusBarIdleMode;
+	//uint8_t dutyBeep;
+	//float chargeCutoffVoltage;
+	//uint8_t autoShutdownTime;
 	bool boardOff;
-	BootAnimation bootAnimation;
+	//BootAnimation bootAnimation;
 	bool isSet;
 	bool debug;
 }lcmConfig_t;
 
-extern uint8_t VESC_RX_Buff[256];
+extern uint8_t VESC_RX_Buff[32];
 extern uint8_t VESC_RX_Flag;
 extern dataPackage data;
 extern lcmConfig_t lcmConfig;

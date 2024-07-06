@@ -11,7 +11,7 @@
  * @param         data_in:   要写入的数据 * @return        0 写入失败      1 写入成功
  * @example       EEPROM_WriteByte(2,0x45);  是将数据写入到HK32F030M_EE_BEGIN+5的地址,如果写入成功则返
  **************************************************************************************************/
-
+#ifdef USE_EEPROM
 void EEPROM_WriteByte(uint32_t address, uint8_t data_in)
 {
     FLASH_Unlock();
@@ -38,3 +38,4 @@ void EEPROM_EraseAll(void)
     FLASH_EraseAllPages();
     FLASH_Lock();
 }
+#endif
