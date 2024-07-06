@@ -76,7 +76,9 @@ int main(void)
 		}
 
 		Power_Task();
+#ifndef GTV
 		Charge_Task();
+#endif
 		Headlights_Task();
 #ifdef USE_BUZZER		
 		Buzzer_Task();

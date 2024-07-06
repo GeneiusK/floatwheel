@@ -13,10 +13,15 @@ typedef enum
 	DG40
 } CELL_TYPE;
 
+#define GTV
 #define   CELL_TYPE                 P42A        // Cell configuration to use for voltage display (P42A, DG40)
 #define	  FULL_VOLTAGE	  			82
 #define	  CHARGING_VOLTAGE	  		40
+#ifdef GTV
+#define   BATTERY_STRING      		18
+#else
 #define   BATTERY_STRING      		20
+#endif
 #define   SHUTDOWN_TIME		  		20
 #define   VESC_RPM            		1000
 #define   VESC_BOOT_TIME      		5000
