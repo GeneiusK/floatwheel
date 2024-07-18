@@ -35,7 +35,7 @@ typedef struct {
 	bool debug;
 }lcmConfig_t;
 
-extern uint8_t VESC_RX_Buff[32];
+extern uint8_t VESC_RX_Buff[64];
 extern uint8_t VESC_RX_Flag;
 extern dataPackage data;
 extern lcmConfig_t lcmConfig;

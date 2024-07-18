@@ -1,11 +1,16 @@
 #include "vesc_uasrt.h"
 #include "flag_bit.h"
 #include "eeprom.h"
+#include "task.h"
 
-uint8_t VESC_RX_Buff[32];
+uint8_t VESC_RX_Buff[64];
 uint8_t VESC_RX_Flag = 0;
 
-#define FIRMWARE_ID "FWADV_2_1_1"
+#ifdef GTV
+#define FIRMWARE_ID "GTV_2_1_1"
+#else
+#define FIRMWARE_ID "ADV_2_1_1"
+#endif
 
 // Access ADC values here to determine riding state
 extern float ADC1_Val, ADC2_Val;
@@ -86,7 +91,7 @@ void buffer_append_float16(uint8_t* buffer, float number, uint8_t scale, uint8_t
  **************************************************/
 void Get_Vesc_Pack_Data(COMM_PACKET_ID id)
 {
-	uint8_t command[24];
+	uint8_t command[32];
 	int len = 1;
 	
 	command[0] = id;
@@ -282,8 +287,9 @@ uint8_t Protocol_Parse(uint8_t * message)
 			len = message[counter++];
 		break;
 		
-		case 0x03:
+		//case 0x03:
 			// we don't support/expect long messages, return error
+		default:
 			return 1;
 		break;
 		
