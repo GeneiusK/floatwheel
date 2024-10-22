@@ -139,13 +139,17 @@ void TIM6_IRQHandler(void)
 		//Buzzer_Time++;
 		Charge_Time++;
 		Flashlight_Time++;
-		Power_Time++;
 		Usart_Time++;
 		ADC_Time++;
 		Shutdown_Time_S++;
 		Flashlight_Detection_Time++;
 		Charger_Detection_1ms++;
-		Idle_Time++;
+
+		// 16bit counters overflow quickly, don't let them:
+		if (Power_Time < 30000)
+			Power_Time++;
+		if (Idle_Time < 30000)
+			Idle_Time++;
 		
 		KEY1_Scan();
 		//Buzzer_Scan();
