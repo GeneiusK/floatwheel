@@ -1131,7 +1131,7 @@ void VESC_State_Task(void)
 	}
 	
 	// No movement and no ADCs? Shutdown after timeout (10-30min)
-	if(ADC1_Val > 2.0 || ADC2_Val > 2.0 || data.rpm > 1000)
+	if(ADC1_Val > 2.0 || ADC2_Val > 2.0 || data.rpm > 10)
 	{
 		Shutdown_Time_S = 0;
 		Shutdown_Time_M = 0;
@@ -1152,8 +1152,8 @@ void VESC_State_Task(void)
 	if(((Shutdown_Time_M > 0) || (Shutdown_Time_S >= 10000)) && (lcmConfig.boardOff))
 	{
 		// After 10 seconds of idle we allow the board to be shut down via app
-		Power_Flag = 4;
-		Power_Time = 0;
+		//Power_Flag = 4;
+		//Power_Time = 0;
 	}
 	lcmConfig.boardOff = false;
 }
