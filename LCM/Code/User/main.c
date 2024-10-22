@@ -76,7 +76,8 @@ int main(void)
 		}
 
 		Power_Task();
-#ifndef GTV
+
+#ifdef ADV
 		Charge_Task();
 #endif
 		Headlights_Task();

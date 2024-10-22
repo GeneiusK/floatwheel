@@ -573,6 +573,7 @@ void CheckPowerLevel(float battery_voltage)
  * @brie   :Charge_Task()
  * @note   :Check for charge start/end conditions
  **************************************************/
+#ifdef ADV
 void Charge_Task(void)
 {
 	static uint8_t charge_step = 0;
@@ -691,6 +692,7 @@ void Charge_Task(void)
 		
 	}
 }
+#endif
 
 /**************************************************
  * @brief  :Set_Headlights_Brightness()
