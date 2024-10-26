@@ -3,7 +3,7 @@
 #include "eeprom.h"
 #include "task.h"
 
-uint8_t VESC_RX_Buff[64];
+uint8_t VESC_RX_Buff[80];
 uint8_t VESC_RX_Flag = 0;
 
 #ifdef GTV

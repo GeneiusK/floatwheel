@@ -163,9 +163,9 @@ void USART1_IRQHandler(void)
 	if((USART1->ISR & USART_ISR_RXNE) != 0)	//接收中断
 	{
 		USART_ClearFlag(USART1,USART_FLAG_RXNE);
-		if (count > 31) {
-			// actual messages should be shorter than 32 bytes but you never know...
-			count = 31;
+		if (count > 75) {
+			// all messages should be shorter than 75 bytes but you never know...
+			count = 75;
 		}
 		VESC_RX_Buff[count++] = USART1->RDR; //将收到的数据发入接收缓冲区
 	}
