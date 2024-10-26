@@ -19,6 +19,7 @@ typedef struct {
 	char fault;
 	bool isForward;
 	bool isHandtest;
+	bool isOldPackage;
 }dataPackage;
 
 typedef struct {

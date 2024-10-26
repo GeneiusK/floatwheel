@@ -375,13 +375,15 @@ static void WS2812_Idle()
 			}
 		}
 		else {
-			WS2818_Knight_Rider(WS2812_Measure);
+			if (data.isOldPackage)
+				WS2812_Set_AllColours(1, 10, 255, 20, 255);
+			else
+				WS2818_Knight_Rider(WS2812_Measure);
 		}
 		return;
 	}
 	// Battery mode
 	WS2812_Power_Display(WS2812_Measure);
-	WS2812_Refresh();
 }
 
 static void WS2812_Handtest(void)
@@ -916,6 +918,7 @@ void Usart_Task(void)
 
 		// float package data
 		data.floatPackageSupported = false;
+		data.isOldPackage = false;
 		data.state = 255;
 		data.fault = 0;
 		data.isForward = true;
@@ -935,10 +938,13 @@ void Usart_Task(void)
 			} else {
 				uint8_t command = COMM_CUSTOM_APP_DATA;
 
+#ifdef ADV
 				if (commandIndex % 20 == 0) {
-					// Sending lighting every 20th frame
+					// Sending charge info every 20th frame
 					command = COMM_CHARGE_INFO;
-				} else if (lcmConfig.debug && commandIndex % 2 == 0) {
+				} else 
+#endif
+				if (lcmConfig.debug && commandIndex % 2 == 0) {
 					// Send debug info every 2nd frame if enabled
 					command = COMM_CUSTOM_DEBUG;
 				}
@@ -1152,8 +1158,8 @@ void VESC_State_Task(void)
 	if(((Shutdown_Time_M > 0) || (Shutdown_Time_S >= 10000)) && (lcmConfig.boardOff))
 	{
 		// After 10 seconds of idle we allow the board to be shut down via app
-		//Power_Flag = 4;
-		//Power_Time = 0;
+		Power_Flag = 4;
+		Power_Time = 0;
 	}
 	lcmConfig.boardOff = false;
 }

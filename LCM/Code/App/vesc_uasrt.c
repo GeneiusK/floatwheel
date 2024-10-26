@@ -328,6 +328,7 @@ uint8_t Protocol_Parse(uint8_t * message)
 				// Use this fault as a placeholder (we only care that the board is stopped anyways)
 				data.state = FAULT_STARTUP;
 			}
+			data.isOldPackage = true;
 		
 		break;
 		
@@ -358,8 +359,8 @@ uint8_t Protocol_Parse(uint8_t * message)
 			data.rpm = buffer_get_float16(pdata, 1.0, &ind);
 			data.avgInputCurrent = buffer_get_float16(pdata, 1.0, &ind);
 
-			float v                 = buffer_get_float16(pdata, 10.0, &ind);
-			if (data.inpVoltage < 50)
+			float v = buffer_get_float16(pdata, 10.0, &ind);
+			if (data.inpVoltage < BATTERY_STRING * 2.5)
 				data.inpVoltage = v;
 			else
 				data.inpVoltage = data.inpVoltage * 0.9 + 0.1 * v;
