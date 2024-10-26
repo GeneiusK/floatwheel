@@ -222,7 +222,7 @@ static void WS2812_VESC(void)
 void WS2812_Boot(void)
 {
 	uint8_t i;
-	uint8_t num = floor(Power_Time / 500) + 1;
+	uint8_t num = floor(Power_Time / (VESC_BOOT_TIME/10)) + 1;
 	uint8_t bootAnims[10][3] = {
 		// Default (blue...green)
 		//{{10,0,30}, {9,3,27}, {8,6,24}, {7,9,21}, {6,12,18}, {5,15,15}, {4,18,12}, {3,21,9}, {2,24,6}, {1,27,3}},
