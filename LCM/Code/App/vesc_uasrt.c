@@ -258,7 +258,6 @@ void Process_Command(uint8_t command, uint8_t data)
 		case FACTORY_RESET:
 			if (data == 1) {
 				//EEPROM_EraseAll();
-				NVIC_SystemReset();
 			}
 			return;
 		case DEBUG:
@@ -298,13 +297,19 @@ uint8_t Protocol_Parse(uint8_t * message)
 		break;
 		
 	}
+
+	if (len > sizeof(VESC_RX_Buff) - 4)
+	{
+		// The indicated length of the message is greater than the buffer size
+		return 1;
+	}
 	
 	crcpayload = crc16(&message[counter], len);
 	
 	if(crcpayload != (((uint16_t)message[counter+len])<<8|
 		             ((uint16_t)message[counter+len+1])))
 	{
-		return 1; //crc不对
+		return 1; //crc is wrong
 	}
 	
 	id = message[counter++];
@@ -382,7 +387,7 @@ uint8_t Protocol_Parse(uint8_t * message)
 				lcmConfig.statusbarBrightness = statusbarBrightness;
 
 				// Process generic command/config
-				while (ind < len) {
+				while (len >= ind + 2) {
 					uint8_t command = pdata[ind++];
 					uint8_t data = pdata[ind++];
 					Process_Command(command, data);

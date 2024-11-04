@@ -85,8 +85,8 @@ void HardFault_Handler(void)
   /* USER CODE END HardFault_IRQn 0 */
   while (1)
   {
-    /* USER CODE BEGIN W1_HardFault_IRQn 0 */
-    /* USER CODE END W1_HardFault_IRQn 0 */
+	/* USER CODE BEGIN W1_HardFault_IRQn 0 */
+	/* USER CODE END W1_HardFault_IRQn 0 */
   }
 }
 
@@ -160,23 +160,27 @@ void USART1_IRQHandler(void)
 {
 	static uint8_t count = 0;
 	
-	if((USART1->ISR & USART_ISR_RXNE) != 0)	//接收中断
+	if((USART1->ISR & USART_ISR_RXNE) != 0)	//Receiving interruption
 	{
 		USART_ClearFlag(USART1,USART_FLAG_RXNE);
-		if (count > 75) {
-			// all messages should be shorter than 75 bytes but you never know...
-			count = 75;
+		if (count < sizeof(VESC_RX_Buff)) {
+			// all messages should be shorter than 80 bytes but you never know...
+			VESC_RX_Buff[count++] = USART1->RDR; //Send the received data into the receiving buffer
 		}
-		VESC_RX_Buff[count++] = USART1->RDR; //将收到的数据发入接收缓冲区
+		else
+		{
+			// The message is too long, just do a dummy read
+			volatile uint8_t dummy = USART1->RDR;
+		}
 	}
-	if((USART1->ISR & USART_ISR_IDLE) != 0) //空闲中断
+	if((USART1->ISR & USART_ISR_IDLE) != 0) //Idle interruption
 	{
-		count = 0; //一帧数据接受完 下标清零
-		VESC_RX_Flag = 1; //接收标志位置1
+		count = 0; //After one frame of data is received, the count is cleared to zero
+		VESC_RX_Flag = 1; //Set flag position 1
 		USART_ClearFlag(USART1,USART_ISR_IDLE);
 		USART_ReceiveData(USART1);
 	}
-	if((USART1->ISR & USART_ISR_ORE) != 0)  //溢出中断
+	if((USART1->ISR & USART_ISR_ORE) != 0)  //Overflow
 	{
 		USART_ClearFlag(USART1,USART_FLAG_ORE);
 		USART_ReceiveData(USART1);
