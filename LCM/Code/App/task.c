@@ -17,11 +17,11 @@ static void lcmConfigReset(void)
 	lcmConfig.headlightIdleBrightness = 0;
 	lcmConfig.statusbarBrightness = 5;
 	lcmConfig.boardOff = 0;
+	lcmConfig.dutyBeep = 90;
 	/*
 	lcmConfig.statusBarIdleMode = DEFAULT_IDLE_MODE;
 	lcmConfig.chargeCutoffVoltage = 0;
 	lcmConfig.bootAnimation = BOOT_DEFAULT;
-	lcmConfig.dutyBeep = 90;
 	lcmConfig.autoShutdownTime = SHUTDOWN_TIME;
 	
 	EEPROM_ReadByte(BOOT_ANIMATION, &lcmConfig.bootAnimation);
@@ -92,14 +92,14 @@ void KEY1_Task(void)
 			if(Power_Flag == 2) // Boot completed
 			{
 				Idle_Time = 0;
-				/*if(Buzzer_Flag == 2)
+				if(Buzzer_Flag == 2)
 				{
 					Buzzer_Flag = 1;
 				}
 				else
 				{
 					Buzzer_Flag = 2;
-				}*/
+				}
 			}
 		break;
 	}
@@ -523,7 +523,7 @@ void Power_Task(void)
 					{
 						Power_Flag = 2; // Boot completed
 						Gear_Position = 1; // The default setting is 1st gear after power-on.
-						//Buzzer_Flag = 2;    // The default buzzer sounds when powering on
+						Buzzer_Flag = 2;    // The default buzzer sounds when powering on
 						power_step = 0;
 						WS2812_Display_Flag = 1;
 					}
@@ -660,7 +660,7 @@ void Charge_Task(void)
 		case 2:
 			CHARGE_ON;
 			Charge_Flag = 2;
-		    charge_step = 3;
+			charge_step = 3;
 			//Power_Flag = 1;	// Boot the VESC
 		break;
 		
@@ -807,10 +807,11 @@ void Headlights_Task(void)
 	}
 }
 
+#ifdef USE_BUZZER
+
 /**************************************************
  * @brie   :Buzzer_Task()
  **************************************************/
-#ifdef USE_BUZZER
 void Buzzer_Task(void)
 {
 	static uint8_t buzzer_step = 0;
@@ -818,9 +819,6 @@ void Buzzer_Task(void)
 	static uint8_t ring_frequency = 0;
 	static uint16_t sound_frequency = 0;
 
-	BUZZER_OFF;
-	return;
-	
 	if(Power_Flag != 2 || Buzzer_Flag == 1)
 	{
 		BUZZER_OFF;
@@ -1078,7 +1076,7 @@ void VESC_State_Task(void)
 	{
 		data.dutyCycleNow = -data.dutyCycleNow;
 	}
-#ifdef USE_BUZZER
+
 	// Duty Cycle beep
 	if ((lcmConfig.dutyBeep > 0) && (data.dutyCycleNow >= lcmConfig.dutyBeep))
 	{
@@ -1092,7 +1090,6 @@ void VESC_State_Task(void)
 	if (data.state > RUNNING_UPSIDEDOWN) {
 		Buzzer_Frequency = 0;
 	}
-#endif	
 	
 	if(data.rpm<0)
 	{
@@ -1102,7 +1099,7 @@ void VESC_State_Task(void)
 	if(data.state == RUNNING_FLYWHEEL) {
 		WS2812_Display_Flag = 2;
 		WS2812_Flag = 5;
-		//Buzzer_Frequency = 0;
+		Buzzer_Frequency = 0;
 	}
 	else if(data.rpm<VESC_RPM)
 	{

@@ -18,6 +18,7 @@
 #include "buzzer.h"
 #include "test.h"
 #include "flag_bit.h"
+#include "task.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -136,7 +137,9 @@ void TIM6_IRQHandler(void)
 		TIM_ClearITPendingBit(TIM6, TIM_IT_Update);
 		
 		WS2812_Counter++;
-		//Buzzer_Time++;
+#ifdef USE_BUZZER
+		Buzzer_Time++;
+#endif
 		Charge_Time++;
 		Flashlight_Time++;
 		Usart_Time++;
@@ -152,7 +155,9 @@ void TIM6_IRQHandler(void)
 			Idle_Time++;
 		
 		KEY1_Scan();
-		//Buzzer_Scan();
+#ifdef USE_BUZZER
+		Buzzer_Scan();
+#endif
   }
 }
 

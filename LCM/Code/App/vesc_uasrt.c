@@ -87,7 +87,7 @@ void buffer_append_int16(uint8_t* buffer, int16_t number, uint8_t *index) {
 }
 
 void buffer_append_float16(uint8_t* buffer, float number, uint8_t scale, uint8_t *index) {
-    buffer_append_int16(buffer, (int16_t)(number * scale), index);
+	buffer_append_int16(buffer, (int16_t)(number * scale), index);
 }
 
 /**************************************************
@@ -204,7 +204,7 @@ uint32_t buffer_get_uint32(const uint8_t *buffer, int32_t *index) {
  * @retval :无
  **************************************************/
 float buffer_get_float16(const uint8_t *buffer, float scale, int32_t *index) {
-    return (float)buffer_get_int16(buffer, index) / scale;
+	return (float)buffer_get_int16(buffer, index) / scale;
 }
 /**************************************************
  * @brie   :buffer_get_float32()
@@ -213,7 +213,7 @@ float buffer_get_float16(const uint8_t *buffer, float scale, int32_t *index) {
  * @retval :无
  **************************************************/
 float buffer_get_float32(const uint8_t *buffer, float scale, int32_t *index) {
-    return (float)buffer_get_int32(buffer, index) / scale;
+	return (float)buffer_get_int32(buffer, index) / scale;
 }
 
 void Process_Command(uint8_t command, uint8_t data)
@@ -310,7 +310,7 @@ uint8_t Protocol_Parse(uint8_t * message)
 	crcpayload = crc16(&message[counter], len);
 	
 	if(crcpayload != (((uint16_t)message[counter+len])<<8|
-		             ((uint16_t)message[counter+len+1])))
+					 ((uint16_t)message[counter+len+1])))
 	{
 		return 1; //crc is wrong
 	}
