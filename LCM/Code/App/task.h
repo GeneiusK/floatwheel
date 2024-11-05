@@ -13,19 +13,20 @@ typedef enum
 	DG40
 } CELL_TYPE;
 
+//#define PINTV
 #define XRV
 //#define GTV
 //#define ADV
 
+#define USE_BUZZER
+
 #define   CELL_TYPE                 P42A        // Cell configuration to use for voltage display (P42A, DG40)
 
-#ifdef GTV
+#if defined(GTV)
 #define   BATTERY_STRING      		18
-#endif
-#ifdef XRV
+#elif defined(PINTV) || defined(XRV)
 #define   BATTERY_STRING      		15
-#endif
-#ifdef ADV
+#elif defined(ADV)
 #define   BATTERY_STRING      		20
 #define	  FULL_VOLTAGE	  			82
 #define	  CHARGING_VOLTAGE	  		40

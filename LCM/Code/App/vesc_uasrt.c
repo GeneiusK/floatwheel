@@ -12,6 +12,9 @@ uint8_t VESC_RX_Flag = 0;
 #ifdef XRV
 #define FIRMWARE_ID "XRV_2_1_2"
 #endif
+#ifdef PINTV
+#define FIRMWARE_ID "PintV_2_1_2"
+#endif
 #ifdef ADV
 #define FIRMWARE_ID "ADV_2_1_2"
 #endif
