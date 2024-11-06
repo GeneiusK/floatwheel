@@ -173,7 +173,7 @@ static void WS2812_VESC(void)
 			
 		case 4:// Riding
 			
-			/*if (Power_Display_Flag > 7) {
+			if (Power_Display_Flag > 7) {
 				// Voltage below 30%?
 				// Display 1/2 red dots at full brightness above anything else
 				WS2812_Power_Display(WS2812_Measure);
@@ -190,7 +190,7 @@ static void WS2812_VESC(void)
 			else if (data.dutyCycleNow > 70) {
 				WS2812_Set_AllColours(1, NUM_LEDS-3,WS2812_Measure/3,WS2812_Measure/3,0);
 			}
-			else */if (Power_Display_Flag > 6) {
+			else if (Power_Display_Flag > 6) {
 				// Voltage below 40%?
 				// Display 1/2/3 red dots at full brightness
 				WS2812_Power_Display(WS2812_Measure);
