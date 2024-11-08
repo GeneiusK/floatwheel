@@ -6,6 +6,7 @@
 uint8_t VESC_RX_Buff[80];
 uint8_t VESC_RX_Flag = 0;
 
+#ifdef uVISION
 #ifdef GTV
 #define FIRMWARE_ID "GTV_2_1_5"
 #endif
@@ -17,6 +18,7 @@ uint8_t VESC_RX_Flag = 0;
 #endif
 #ifdef ADV
 #define FIRMWARE_ID "ADV_2_1_5"
+#endif
 #endif
 
 // Access ADC values here to determine riding state
