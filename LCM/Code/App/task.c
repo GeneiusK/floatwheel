@@ -375,10 +375,7 @@ static void WS2812_Idle()
 			}
 		}
 		else {
-			if (data.isOldPackage)
-				WS2812_Set_AllColours(1, 10, 255, 20, 255);
-			else
-				WS2818_Knight_Rider(WS2812_Measure);
+			WS2818_Knight_Rider(WS2812_Measure);
 		}
 		return;
 	}
@@ -916,7 +913,6 @@ void Usart_Task(void)
 
 		// float package data
 		data.floatPackageSupported = false;
-		data.isOldPackage = false;
 		data.state = 255;
 		data.fault = 0;
 		data.isForward = true;

@@ -336,7 +336,6 @@ uint8_t Protocol_Parse(uint8_t * message)
 				// Use this fault as a placeholder (we only care that the board is stopped anyways)
 				data.state = FAULT_STARTUP;
 			}
-			data.isOldPackage = true;
 		
 		break;
 		
