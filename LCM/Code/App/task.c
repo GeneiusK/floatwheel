@@ -201,12 +201,18 @@ static void WS2812_VESC(void)
 		break;
 
 		case 5:
-			// Flywheel Mode: just a rando pattern fpr now
-			red = Power_Time % 255;
-			green = (Power_Time + 100) % 255;
-		  	blue = (Power_Time - 100) % 255;
-		  	pos = (Power_Time/100) % 10;
+			// Flywheel Mode: just a rando pattern for now
+			red = Power_Time % 110;
+			green = (Power_Time + 100) % 110;
+			blue = (Power_Time - 100) % 110;
+			pos = (Power_Time/95) % 10;
 			WS2812_Set_Colour(pos,red,green,blue);
+		
+			// power_time gets capped in hk_it.c at 30k to prevent integer overflow
+			// set it down to 10k to let it increment again
+			if (Power_Time > 20000)
+				Power_Time = 10000;
+
 		break;			
 		default:
 		break;
