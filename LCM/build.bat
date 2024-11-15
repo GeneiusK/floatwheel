@@ -1,7 +1,12 @@
-@REM ADV
-cbuild setup Project/MDK5/LCM_Light_Control_IO_WS2812_New.csolution.yml --context-set --context LCM_Light_Control_IO_WS2812_New.Release+ADV --packs
-cbuild Project/MDK5/LCM_Light_Control_IO_WS2812_New.csolution.yml --context-set --context LCM_Light_Control_IO_WS2812_New.Release+ADV
-copy Project/MDK5/out/LCM_Light_Control_IO_WS2812_New/ADV/Release/*.hex .
+@REM ADV-P42A
+cbuild setup Project/MDK5/LCM_Light_Control_IO_WS2812_New.csolution.yml --context-set --context LCM_Light_Control_IO_WS2812_New.Release+ADV-P42A --packs
+cbuild Project/MDK5/LCM_Light_Control_IO_WS2812_New.csolution.yml --context-set --context LCM_Light_Control_IO_WS2812_New.Release+ADV-P42A
+copy Project/MDK5/out/LCM_Light_Control_IO_WS2812_New/ADV-P42A/Release/*.hex .
+
+@REM ADV-DG40
+cbuild setup Project/MDK5/LCM_Light_Control_IO_WS2812_New.csolution.yml --context-set --context LCM_Light_Control_IO_WS2812_New.Release+ADV-DG40 --packs
+cbuild Project/MDK5/LCM_Light_Control_IO_WS2812_New.csolution.yml --context-set --context LCM_Light_Control_IO_WS2812_New.Release+ADV-DG40
+copy Project/MDK5/out/LCM_Light_Control_IO_WS2812_New/ADV-DG40/Release/*.hex .
 
 @REM GTV
 cbuild setup Project/MDK5/LCM_Light_Control_IO_WS2812_New.csolution.yml --context-set --context LCM_Light_Control_IO_WS2812_New.Release+GTV --packs

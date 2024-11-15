@@ -549,11 +549,18 @@ void Power_Task(void)
 
 void CheckPowerLevel(float battery_voltage)
 {
+	#ifdef P42A
 	float battVoltages[10] = {4.054, 4.01, 3.908, 3.827, 3.74, 3.651, 3.571, 3.485, 3.38, 3.0}; //P42A
-	//float battVoltages[10] = {4.07, 4.025, 3.91, 3.834, 3.746, 3.607, 3.49, 3.351, 3.168, 2.81}; //DG40
-	//float battVoltages[10] = { 4.1, 4.00, 3.9, 3.8, 3.7, 3.6, 3.5, 3.4, 3.3, 3.1 }; // Sony VTC6
-	//float battcellcurve[10] = {4.054, 4.01, 3.908, 3.827, 3.74, 3.651, 3.571, 3.485, 3.38, 3.0};   //P42A
-								   //{4.07, 4.025, 3.91, 3.834, 3.746, 3.607, 3.49, 3.351, 3.168, 2.81}}; //DG40
+	#endif
+
+	#ifdef DG40
+	float battVoltages[10] = {4.07, 4.025, 3.91, 3.834, 3.746, 3.607, 3.49, 3.351, 3.168, 2.81}; //DG40
+	#endif
+
+	#ifdef VTC6
+	float battVoltages[10] = { 4.1, 4.00, 3.9, 3.8, 3.7, 3.6, 3.5, 3.4, 3.3, 3.1 }; // Sony VTC6
+	#endif
+
 	//static uint8_t cell_type_last = 1; //CELL_TYPE P42A equates out to 0
 
 	/*if (CELL_TYPE != cell_type_last) // If !P42a run once at boot or on change

@@ -7,11 +7,11 @@
 #include "flag_bit.h"
 #include "vesc_uasrt.h"
 
-typedef enum
-{
-	P42A,
-	DG40
-} CELL_TYPE;
+// typedef enum
+// {
+// 	P42A,
+// 	DG40
+// } CELL_TYPE;
 
 //#define PINTV
 //#define XRV
@@ -20,7 +20,7 @@ typedef enum
 
 #define USE_BUZZER
 
-#define   CELL_TYPE                 P42A        // Cell configuration to use for voltage display (P42A, DG40)
+// #define   CELL_TYPE                 P42A        // Cell configuration to use for voltage display (P42A, DG40)
 
 #if defined(GTV)
 #define   BATTERY_STRING      		18
