@@ -2,11 +2,12 @@
 
 #### Linux Prerequisites
 
-1. Install `libncurses5` via your package manager of choice
+1. Install `libncurses5` and 'curl' via your package manager of choice
 
 ## Setting up the project
 
 1. Install [Visual Studio Code](https://code.visualstudio.com)
+1. Type 'code' to run it
 1. Open `floatwheel` folder in Visual Studio Code
 1. Install [Keil Studio Pack](https://marketplace.visualstudio.com/items?itemName=Arm.keil-studio-pack) extension [^1]
 1. Wait for Arm Tools to finish downloading / installing [^2][^3]
