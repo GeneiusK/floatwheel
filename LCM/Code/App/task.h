@@ -35,12 +35,12 @@
 #define   DEFAULT_CELL_TYPE			P42A
 #endif
 
-#define   SHUTDOWN_TIME				10
-#define   VESC_RPM					1000
-#define   VESC_BOOT_TIME			4000
-#define   VESC_SHUTDOWN_TIME		1000
-#define   DUTY_CYCLE				0.9
-#define   VOLTAGE_RECEIPT			0.02
+#define   SHUTDOWN_TIME		  		20
+#define   VESC_RPM            		1000
+#define   VESC_BOOT_TIME      		4000
+#define   VESC_SHUTDOWN_TIME      	1000
+#define   DUTY_CYCLE          		0.9
+#define   VOLTAGE_RECEIPT     		0.02
 #define	  CHARGE_COMMAND_TIME		1000 		// frequency of notifying the float package of current charge state
 /*******************************************************************************/
 #define   VESC_RPM_WIDTH			-200
