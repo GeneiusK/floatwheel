@@ -7,19 +7,20 @@
 #include "flag_bit.h"
 #include "vesc_uasrt.h"
 
-typedef enum
-{
-	P42A,
-	DG40,
-	VTC6
-} CELL_TYPE;
-
 //#define PINTV
-#define XRV
+//#define XRV
 //#define GTV
 //#define ADV
 
 #define USE_BUZZER
+
+#ifdef uVISION
+#if defined(PINTV) || defined(XRV)
+#define   VTC6
+#else
+#define   P42A
+#endif
+#endif
 
 #if defined(GTV)
 #define   BATTERY_STRING			18
