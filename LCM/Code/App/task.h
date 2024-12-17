@@ -32,7 +32,7 @@
 #define	  CHARGING_VOLTAGE	  		40
 #endif
 
-#define   SHUTDOWN_TIME		  		10
+#define   SHUTDOWN_TIME		  		20
 #define   VESC_RPM            		1000
 #define   VESC_BOOT_TIME      		4000
 #define   VESC_SHUTDOWN_TIME      	1000

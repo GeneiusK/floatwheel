@@ -372,7 +372,7 @@ static void WS2818_Knight_Rider(uint8_t brightness) {
 // Idle animation:
 static void WS2812_Idle()
 {
-	if (Idle_Time > 3000) {
+	if (Idle_Time > 5000) {
 		if (Power_Display_Flag > 9) {
 			// Voltage below 10%? Flash bright red!
 			WS2812_Set_AllColours(1, 10, 255, 20, 20);
