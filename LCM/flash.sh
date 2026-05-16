@@ -28,17 +28,13 @@ fi
 # Check that the pyocd command is installed
 if [ ! -x "$(command -v pyocd)" ]; then
     echo "pyocd is not installed or was not found in your PATH"
-    echo "Install it with: python -m pip install --upgrade pyocd==0.34.3"
+    echo "Install it with: uv tool install pyocd==0.34.3 --with 'setuptools<81'"
     echo "If you have installed pyocd and it cannot be found, please add it to your PATH"
     exit 1
 fi
 
-# Check that the pyocd command is installed
-if [ ! -x "$(command -v st-flash)" ]; then
-    echo "ST-Link tools are not installed"
-    echo "See https://github.com/stlink-org/stlink"
-    exit 1
-fi
+PYTHONWARNINGS="${PYTHONWARNINGS:+$PYTHONWARNINGS,}ignore:pkg_resources is deprecated:UserWarning"
+export PYTHONWARNINGS
 
 # Check that HKMicroChip.HK32F030xMxx_DFP.1.0.17.pack exists
 if [ ! -f "./HKMicroChip.HK32F030xMxx_DFP.1.0.17.pack" ]; then
